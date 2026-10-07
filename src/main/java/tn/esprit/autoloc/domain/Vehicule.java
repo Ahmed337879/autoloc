@@ -2,7 +2,10 @@ package tn.esprit.autoloc.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
+
 import java.math.BigDecimal;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "vehicule")
@@ -38,4 +41,13 @@ public class Vehicule {
 
     @ManyToOne
     private Agence agence;
+
+    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "vehicule", fetch = FetchType.LAZY)
+    private Set<Reservation> reservations = new HashSet<>();
+
+    @OneToMany(mappedBy = "vehicule")
+    private Set<Maintenance> maintenances = new HashSet<>();
+
+    @ManyToMany
+    private Set<Equipement> equipements = new HashSet<>();
 }

@@ -43,4 +43,7 @@ public class Agence {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "agence", fetch = FetchType.EAGER)
     private Set<Vehicule> vehicules = new HashSet<>();
+
+    @OneToMany(mappedBy = "agence", fetch = FetchType.LAZY)
+    private Set<Employe> employes = new HashSet<>();
 }
