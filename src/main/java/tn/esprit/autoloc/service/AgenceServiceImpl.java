@@ -1,11 +1,13 @@
 package tn.esprit.autoloc.service;
 
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 import tn.esprit.autoloc.Utils;
 import tn.esprit.autoloc.domain.Agence;
 import tn.esprit.autoloc.repository.IAgenceRepository;
 
 @Service
+@Primary
 public class AgenceServiceImpl extends GenericServiceImpl<Agence, Long> implements IAgenceService {
 
     public AgenceServiceImpl(IAgenceRepository agenceRepository) {
