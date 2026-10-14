@@ -2,6 +2,7 @@ package tn.esprit.autoloc.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import tn.esprit.autoloc.Utils;
 import tn.esprit.autoloc.domain.Agence;
 import tn.esprit.autoloc.repository.IAgenceRepository;
 
@@ -15,12 +16,26 @@ public class BasicAgenceServiceImpl implements IAgenceService {
 
     @Override
     public boolean check(Agence agence, boolean isNew) {
-        return false;
+        if (agence == null) {
+            return false;
+        }
+        if (!isNew && agence.getIdAgence() == null) {
+            return false;
+        }
+        return Utils.isNotEmpty(agence.getNom())
+                && Utils.isNotEmpty(agence.getVille())
+                && Utils.isNotEmpty(agence.getAdresse());
     }
 
     @Override
     public Agence create(Agence agence) {
-        return null;
+        if (agence.getIdAgence() != null) {
+            throw new IllegalArgumentException("L'identifiant de l'agence ne doit pas être renseigné");
+        }
+        if (!check(agence, true)) {
+            throw new IllegalArgumentException("Les données de l'agence ne sont pas valides");
+        }
+        return agenceRepository.save(agence);
     }
 
     @Override
