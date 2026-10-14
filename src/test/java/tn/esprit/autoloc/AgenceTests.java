@@ -7,15 +7,19 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
 import tn.esprit.autoloc.domain.Agence;
 import tn.esprit.autoloc.domain.CategorieVehicule;
 import tn.esprit.autoloc.domain.StatutVehicule;
 import tn.esprit.autoloc.domain.Vehicule;
 import tn.esprit.autoloc.repository.IAgenceRepository;
+import tn.esprit.autoloc.service.IAgenceService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.math.BigDecimal;
@@ -31,6 +35,9 @@ public class AgenceTests {
 
     @Autowired
     private IAgenceRepository fullAgenceRepository;
+
+    @Autowired
+    private IAgenceService agenceService;
 
 
     private void addAgence(CrudRepository<Agence, Long> crudRepository) {
@@ -155,7 +162,23 @@ public class AgenceTests {
         // Vérifier le résultat
         fail(resultat.toString());
     }
+
+    @Test
+    public void createAgence() {
+        Agence agence = new Agence();
+        agence.setNom("Agence Sousse");
+        agence.setVille("Sousse");
+        agence.setAdresse("10 Avenue Habib Bourguiba");
+        agence.setTelephone("73222333");
+
+        Agence creee = agenceService.create(agence);
+
+        // Vérifier que l'agence a bien été insérée
+        assertNotNull(creee.getIdAgence());
+        assertEquals("Agence Sousse", agenceService.findById(creee.getIdAgence()).getNom());
+    }
 }
 
+@Repository
 interface AgenceRepositoryMock extends CrudRepository<Agence, Long> {
 }
