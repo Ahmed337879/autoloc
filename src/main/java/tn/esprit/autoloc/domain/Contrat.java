@@ -1,5 +1,7 @@
 package tn.esprit.autoloc.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -41,9 +43,11 @@ public class Contrat {
     @Column(nullable = false)
     private boolean valide;
 
+    @JsonIgnore
     @OneToOne(mappedBy = "contrat")
     private Reservation reservation;
 
+    @JsonManagedReference("contrat-paiements")
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "contrat", fetch = FetchType.EAGER)
     private Set<Paiement> paiements = new HashSet<>();
 }
