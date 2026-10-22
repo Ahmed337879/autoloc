@@ -1,5 +1,6 @@
 package tn.esprit.autoloc.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -41,9 +42,11 @@ public class Agence {
     @Column(length = 20)
     private String telephone;
 
+    @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "agence", fetch = FetchType.EAGER)
     private Set<Vehicule> vehicules = new HashSet<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "agence", fetch = FetchType.LAZY)
     private Set<Employe> employes = new HashSet<>();
 }

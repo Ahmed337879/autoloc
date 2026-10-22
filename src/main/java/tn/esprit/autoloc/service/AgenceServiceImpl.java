@@ -2,6 +2,7 @@ package tn.esprit.autoloc.service;
 
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import tn.esprit.autoloc.Utils;
 import tn.esprit.autoloc.domain.Agence;
 import tn.esprit.autoloc.repository.IAgenceRepository;
@@ -43,5 +44,17 @@ public class AgenceServiceImpl extends GenericServiceImpl<Agence, Long> implemen
     @Override
     public boolean hasVehicules(Long id) {
         return !findById(id).getVehicules().isEmpty();
+    }
+
+    // Désaffecter l'agence de ses véhicules et employés avant de la supprimer
+    @Override
+    @Transactional
+    public void deleteById(Long id) {
+        Agence agence = findById(id);
+        agence.getVehicules().forEach(vehicule -> vehicule.setAgence(null));
+        agence.getVehicules().clear();
+        agence.getEmployes().forEach(employe -> employe.setAgence(null));
+        agence.getEmployes().clear();
+        repository.delete(agence);
     }
 }

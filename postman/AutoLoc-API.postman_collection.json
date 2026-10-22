@@ -1,0 +1,2875 @@
+{
+  "info": {
+    "name": "AutoLoc-API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Agences",
+      "item": [
+        {
+          "name": "Liste",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 200\", () => {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"Réponse JSON sous forme de tableau\", () => {",
+                  "    pm.expect(pm.response.json()).to.be.an(\"array\");",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{asiApiUrl}}/agences",
+              "host": [
+                "{{asiApiUrl}}"
+              ],
+              "path": [
+                "agences"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Ajout-sans-id",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 201\", () => {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "pm.test(\"Identifiant généré\", () => {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json.idAgence).to.be.a(\"number\");",
+                  "    pm.environment.set(\"agenceId\", json.idAgence);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{asiApiUrl}}/agences",
+              "host": [
+                "{{asiApiUrl}}"
+              ],
+              "path": [
+                "agences"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nom\": \"Agence Ariana\",\n  \"ville\": \"Tunis\",\n  \"adresse\": \"1 Rue Hedi\",\n  \"telephone\": \"71585874\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Ajout-avec-id",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 400\", () => {",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{asiApiUrl}}/agences",
+              "host": [
+                "{{asiApiUrl}}"
+              ],
+              "path": [
+                "agences"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idAgence\": 1,\n  \"nom\": \"Agence Ariana\",\n  \"ville\": \"Tunis\",\n  \"adresse\": \"1 Rue Hedi\",\n  \"telephone\": \"71585874\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Consultation-existant",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 200\", () => {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"Bon identifiant\", () => {",
+                  "    pm.expect(pm.response.json().idAgence).to.eql(Number(pm.environment.get(\"agenceId\")));",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{asiApiUrl}}/agences/{{agenceId}}",
+              "host": [
+                "{{asiApiUrl}}"
+              ],
+              "path": [
+                "agences",
+                "{{agenceId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Consultation-inexistant",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 404\", () => {",
+                  "    pm.response.to.have.status(404);",
+                  "});",
+                  "pm.test(\"Corps d'erreur JSON\", () => {",
+                  "    pm.expect(pm.response.json().statut).to.eql(404);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{asiApiUrl}}/agences/9999",
+              "host": [
+                "{{asiApiUrl}}"
+              ],
+              "path": [
+                "agences",
+                "9999"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Modification-existant",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 200\", () => {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"Champ nom modifié\", () => {",
+                  "    pm.expect(String(pm.response.json().nom)).to.eql(String(\"Agence Ariana Centre\"));",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{asiApiUrl}}/agences/{{agenceId}}",
+              "host": [
+                "{{asiApiUrl}}"
+              ],
+              "path": [
+                "agences",
+                "{{agenceId}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nom\": \"Agence Ariana Centre\",\n  \"ville\": \"Tunis\",\n  \"adresse\": \"1 Rue Hedi\",\n  \"telephone\": \"71585874\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Modification-inexistant",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 404\", () => {",
+                  "    pm.response.to.have.status(404);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{asiApiUrl}}/agences/9999",
+              "host": [
+                "{{asiApiUrl}}"
+              ],
+              "path": [
+                "agences",
+                "9999"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nom\": \"Agence Ariana Centre\",\n  \"ville\": \"Tunis\",\n  \"adresse\": \"1 Rue Hedi\",\n  \"telephone\": \"71585874\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Suppression-existant",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 204\", () => {",
+                  "    pm.response.to.have.status(204);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{asiApiUrl}}/agences/{{agenceId}}",
+              "host": [
+                "{{asiApiUrl}}"
+              ],
+              "path": [
+                "agences",
+                "{{agenceId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Suppression-inexistant",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 404\", () => {",
+                  "    pm.response.to.have.status(404);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{asiApiUrl}}/agences/9999",
+              "host": [
+                "{{asiApiUrl}}"
+              ],
+              "path": [
+                "agences",
+                "9999"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Clients",
+      "item": [
+        {
+          "name": "Liste",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 200\", () => {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"Réponse JSON sous forme de tableau\", () => {",
+                  "    pm.expect(pm.response.json()).to.be.an(\"array\");",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{asiApiUrl}}/clients",
+              "host": [
+                "{{asiApiUrl}}"
+              ],
+              "path": [
+                "clients"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Ajout-sans-id",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 201\", () => {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "pm.test(\"Identifiant généré\", () => {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json.idClient).to.be.a(\"number\");",
+                  "    pm.environment.set(\"clientId\", json.idClient);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{asiApiUrl}}/clients",
+              "host": [
+                "{{asiApiUrl}}"
+              ],
+              "path": [
+                "clients"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nom\": \"Ben Salem\",\n  \"prenom\": \"Mohamed\",\n  \"email\": \"mohamed@exemple.tn\",\n  \"telephone\": \"22111222\",\n  \"numPermis\": \"PERMIS-001\",\n  \"dateInscription\": \"2026-10-01\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Ajout-avec-id",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 400\", () => {",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{asiApiUrl}}/clients",
+              "host": [
+                "{{asiApiUrl}}"
+              ],
+              "path": [
+                "clients"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idClient\": 1,\n  \"nom\": \"Ben Salem\",\n  \"prenom\": \"Mohamed\",\n  \"email\": \"mohamed@exemple.tn\",\n  \"telephone\": \"22111222\",\n  \"numPermis\": \"PERMIS-001\",\n  \"dateInscription\": \"2026-10-01\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Consultation-existant",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 200\", () => {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"Bon identifiant\", () => {",
+                  "    pm.expect(pm.response.json().idClient).to.eql(Number(pm.environment.get(\"clientId\")));",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{asiApiUrl}}/clients/{{clientId}}",
+              "host": [
+                "{{asiApiUrl}}"
+              ],
+              "path": [
+                "clients",
+                "{{clientId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Consultation-inexistant",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 404\", () => {",
+                  "    pm.response.to.have.status(404);",
+                  "});",
+                  "pm.test(\"Corps d'erreur JSON\", () => {",
+                  "    pm.expect(pm.response.json().statut).to.eql(404);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{asiApiUrl}}/clients/9999",
+              "host": [
+                "{{asiApiUrl}}"
+              ],
+              "path": [
+                "clients",
+                "9999"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Modification-existant",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 200\", () => {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"Champ telephone modifié\", () => {",
+                  "    pm.expect(String(pm.response.json().telephone)).to.eql(String(\"99888777\"));",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{asiApiUrl}}/clients/{{clientId}}",
+              "host": [
+                "{{asiApiUrl}}"
+              ],
+              "path": [
+                "clients",
+                "{{clientId}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nom\": \"Ben Salem\",\n  \"prenom\": \"Mohamed\",\n  \"email\": \"mohamed@exemple.tn\",\n  \"telephone\": \"99888777\",\n  \"numPermis\": \"PERMIS-001\",\n  \"dateInscription\": \"2026-10-01\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Modification-inexistant",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 404\", () => {",
+                  "    pm.response.to.have.status(404);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{asiApiUrl}}/clients/9999",
+              "host": [
+                "{{asiApiUrl}}"
+              ],
+              "path": [
+                "clients",
+                "9999"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nom\": \"Ben Salem\",\n  \"prenom\": \"Mohamed\",\n  \"email\": \"mohamed@exemple.tn\",\n  \"telephone\": \"99888777\",\n  \"numPermis\": \"PERMIS-001\",\n  \"dateInscription\": \"2026-10-01\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Suppression-existant",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 204\", () => {",
+                  "    pm.response.to.have.status(204);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{asiApiUrl}}/clients/{{clientId}}",
+              "host": [
+                "{{asiApiUrl}}"
+              ],
+              "path": [
+                "clients",
+                "{{clientId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Suppression-inexistant",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 404\", () => {",
+                  "    pm.response.to.have.status(404);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{asiApiUrl}}/clients/9999",
+              "host": [
+                "{{asiApiUrl}}"
+              ],
+              "path": [
+                "clients",
+                "9999"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Contrats",
+      "item": [
+        {
+          "name": "Liste",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 200\", () => {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"Réponse JSON sous forme de tableau\", () => {",
+                  "    pm.expect(pm.response.json()).to.be.an(\"array\");",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{asiApiUrl}}/contrats",
+              "host": [
+                "{{asiApiUrl}}"
+              ],
+              "path": [
+                "contrats"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Ajout-sans-id",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 201\", () => {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "pm.test(\"Identifiant généré\", () => {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json.idContrat).to.be.a(\"number\");",
+                  "    pm.environment.set(\"contratId\", json.idContrat);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{asiApiUrl}}/contrats",
+              "host": [
+                "{{asiApiUrl}}"
+              ],
+              "path": [
+                "contrats"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"dateSignature\": \"2026-11-02\",\n  \"montantTotal\": 480.0,\n  \"valide\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Ajout-avec-id",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 400\", () => {",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{asiApiUrl}}/contrats",
+              "host": [
+                "{{asiApiUrl}}"
+              ],
+              "path": [
+                "contrats"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idContrat\": 1,\n  \"dateSignature\": \"2026-11-02\",\n  \"montantTotal\": 480.0,\n  \"valide\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Consultation-existant",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 200\", () => {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"Bon identifiant\", () => {",
+                  "    pm.expect(pm.response.json().idContrat).to.eql(Number(pm.environment.get(\"contratId\")));",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{asiApiUrl}}/contrats/{{contratId}}",
+              "host": [
+                "{{asiApiUrl}}"
+              ],
+              "path": [
+                "contrats",
+                "{{contratId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Consultation-inexistant",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 404\", () => {",
+                  "    pm.response.to.have.status(404);",
+                  "});",
+                  "pm.test(\"Corps d'erreur JSON\", () => {",
+                  "    pm.expect(pm.response.json().statut).to.eql(404);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{asiApiUrl}}/contrats/9999",
+              "host": [
+                "{{asiApiUrl}}"
+              ],
+              "path": [
+                "contrats",
+                "9999"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Modification-existant",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 200\", () => {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"Champ montantTotal modifié\", () => {",
+                  "    pm.expect(String(pm.response.json().montantTotal)).to.eql(String(520));",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{asiApiUrl}}/contrats/{{contratId}}",
+              "host": [
+                "{{asiApiUrl}}"
+              ],
+              "path": [
+                "contrats",
+                "{{contratId}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"dateSignature\": \"2026-11-02\",\n  \"montantTotal\": 520,\n  \"valide\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Modification-inexistant",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 404\", () => {",
+                  "    pm.response.to.have.status(404);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{asiApiUrl}}/contrats/9999",
+              "host": [
+                "{{asiApiUrl}}"
+              ],
+              "path": [
+                "contrats",
+                "9999"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"dateSignature\": \"2026-11-02\",\n  \"montantTotal\": 520,\n  \"valide\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Suppression-existant",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 204\", () => {",
+                  "    pm.response.to.have.status(204);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{asiApiUrl}}/contrats/{{contratId}}",
+              "host": [
+                "{{asiApiUrl}}"
+              ],
+              "path": [
+                "contrats",
+                "{{contratId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Suppression-inexistant",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 404\", () => {",
+                  "    pm.response.to.have.status(404);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{asiApiUrl}}/contrats/9999",
+              "host": [
+                "{{asiApiUrl}}"
+              ],
+              "path": [
+                "contrats",
+                "9999"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Employes",
+      "item": [
+        {
+          "name": "Liste",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 200\", () => {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"Réponse JSON sous forme de tableau\", () => {",
+                  "    pm.expect(pm.response.json()).to.be.an(\"array\");",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{asiApiUrl}}/employes",
+              "host": [
+                "{{asiApiUrl}}"
+              ],
+              "path": [
+                "employes"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Ajout-sans-id",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 201\", () => {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "pm.test(\"Identifiant généré\", () => {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json.idEmploye).to.be.a(\"number\");",
+                  "    pm.environment.set(\"employeId\", json.idEmploye);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{asiApiUrl}}/employes",
+              "host": [
+                "{{asiApiUrl}}"
+              ],
+              "path": [
+                "employes"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nom\": \"Trabelsi\",\n  \"prenom\": \"Sami\",\n  \"role\": \"AGENT\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Ajout-avec-id",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 400\", () => {",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{asiApiUrl}}/employes",
+              "host": [
+                "{{asiApiUrl}}"
+              ],
+              "path": [
+                "employes"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idEmploye\": 1,\n  \"nom\": \"Trabelsi\",\n  \"prenom\": \"Sami\",\n  \"role\": \"AGENT\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Consultation-existant",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 200\", () => {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"Bon identifiant\", () => {",
+                  "    pm.expect(pm.response.json().idEmploye).to.eql(Number(pm.environment.get(\"employeId\")));",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{asiApiUrl}}/employes/{{employeId}}",
+              "host": [
+                "{{asiApiUrl}}"
+              ],
+              "path": [
+                "employes",
+                "{{employeId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Consultation-inexistant",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 404\", () => {",
+                  "    pm.response.to.have.status(404);",
+                  "});",
+                  "pm.test(\"Corps d'erreur JSON\", () => {",
+                  "    pm.expect(pm.response.json().statut).to.eql(404);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{asiApiUrl}}/employes/9999",
+              "host": [
+                "{{asiApiUrl}}"
+              ],
+              "path": [
+                "employes",
+                "9999"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Modification-existant",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 200\", () => {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"Champ role modifié\", () => {",
+                  "    pm.expect(String(pm.response.json().role)).to.eql(String(\"RESPONSABLE\"));",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{asiApiUrl}}/employes/{{employeId}}",
+              "host": [
+                "{{asiApiUrl}}"
+              ],
+              "path": [
+                "employes",
+                "{{employeId}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nom\": \"Trabelsi\",\n  \"prenom\": \"Sami\",\n  \"role\": \"RESPONSABLE\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Modification-inexistant",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 404\", () => {",
+                  "    pm.response.to.have.status(404);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{asiApiUrl}}/employes/9999",
+              "host": [
+                "{{asiApiUrl}}"
+              ],
+              "path": [
+                "employes",
+                "9999"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nom\": \"Trabelsi\",\n  \"prenom\": \"Sami\",\n  \"role\": \"RESPONSABLE\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Suppression-existant",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 204\", () => {",
+                  "    pm.response.to.have.status(204);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{asiApiUrl}}/employes/{{employeId}}",
+              "host": [
+                "{{asiApiUrl}}"
+              ],
+              "path": [
+                "employes",
+                "{{employeId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Suppression-inexistant",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 404\", () => {",
+                  "    pm.response.to.have.status(404);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{asiApiUrl}}/employes/9999",
+              "host": [
+                "{{asiApiUrl}}"
+              ],
+              "path": [
+                "employes",
+                "9999"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Equipements",
+      "item": [
+        {
+          "name": "Liste",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 200\", () => {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"Réponse JSON sous forme de tableau\", () => {",
+                  "    pm.expect(pm.response.json()).to.be.an(\"array\");",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{asiApiUrl}}/equipements",
+              "host": [
+                "{{asiApiUrl}}"
+              ],
+              "path": [
+                "equipements"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Ajout-sans-id",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 201\", () => {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "pm.test(\"Identifiant généré\", () => {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json.idEquipement).to.be.a(\"number\");",
+                  "    pm.environment.set(\"equipementId\", json.idEquipement);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{asiApiUrl}}/equipements",
+              "host": [
+                "{{asiApiUrl}}"
+              ],
+              "path": [
+                "equipements"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"libelle\": \"GPS\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Ajout-avec-id",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 400\", () => {",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{asiApiUrl}}/equipements",
+              "host": [
+                "{{asiApiUrl}}"
+              ],
+              "path": [
+                "equipements"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idEquipement\": 1,\n  \"libelle\": \"GPS\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Consultation-existant",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 200\", () => {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"Bon identifiant\", () => {",
+                  "    pm.expect(pm.response.json().idEquipement).to.eql(Number(pm.environment.get(\"equipementId\")));",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{asiApiUrl}}/equipements/{{equipementId}}",
+              "host": [
+                "{{asiApiUrl}}"
+              ],
+              "path": [
+                "equipements",
+                "{{equipementId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Consultation-inexistant",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 404\", () => {",
+                  "    pm.response.to.have.status(404);",
+                  "});",
+                  "pm.test(\"Corps d'erreur JSON\", () => {",
+                  "    pm.expect(pm.response.json().statut).to.eql(404);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{asiApiUrl}}/equipements/9999",
+              "host": [
+                "{{asiApiUrl}}"
+              ],
+              "path": [
+                "equipements",
+                "9999"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Modification-existant",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 200\", () => {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"Champ libelle modifié\", () => {",
+                  "    pm.expect(String(pm.response.json().libelle)).to.eql(String(\"Siège bébé\"));",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{asiApiUrl}}/equipements/{{equipementId}}",
+              "host": [
+                "{{asiApiUrl}}"
+              ],
+              "path": [
+                "equipements",
+                "{{equipementId}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"libelle\": \"Siège bébé\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Modification-inexistant",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 404\", () => {",
+                  "    pm.response.to.have.status(404);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{asiApiUrl}}/equipements/9999",
+              "host": [
+                "{{asiApiUrl}}"
+              ],
+              "path": [
+                "equipements",
+                "9999"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"libelle\": \"Siège bébé\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Suppression-existant",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 204\", () => {",
+                  "    pm.response.to.have.status(204);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{asiApiUrl}}/equipements/{{equipementId}}",
+              "host": [
+                "{{asiApiUrl}}"
+              ],
+              "path": [
+                "equipements",
+                "{{equipementId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Suppression-inexistant",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 404\", () => {",
+                  "    pm.response.to.have.status(404);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{asiApiUrl}}/equipements/9999",
+              "host": [
+                "{{asiApiUrl}}"
+              ],
+              "path": [
+                "equipements",
+                "9999"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Maintenances",
+      "item": [
+        {
+          "name": "Liste",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 200\", () => {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"Réponse JSON sous forme de tableau\", () => {",
+                  "    pm.expect(pm.response.json()).to.be.an(\"array\");",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{asiApiUrl}}/maintenances",
+              "host": [
+                "{{asiApiUrl}}"
+              ],
+              "path": [
+                "maintenances"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Ajout-sans-id",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 201\", () => {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "pm.test(\"Identifiant généré\", () => {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json.idMaintenance).to.be.a(\"number\");",
+                  "    pm.environment.set(\"maintenanceId\", json.idMaintenance);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{asiApiUrl}}/maintenances",
+              "host": [
+                "{{asiApiUrl}}"
+              ],
+              "path": [
+                "maintenances"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"dateDebut\": \"2026-11-01\",\n  \"description\": \"Vidange\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Ajout-avec-id",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 400\", () => {",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{asiApiUrl}}/maintenances",
+              "host": [
+                "{{asiApiUrl}}"
+              ],
+              "path": [
+                "maintenances"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idMaintenance\": 1,\n  \"dateDebut\": \"2026-11-01\",\n  \"description\": \"Vidange\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Consultation-existant",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 200\", () => {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"Bon identifiant\", () => {",
+                  "    pm.expect(pm.response.json().idMaintenance).to.eql(Number(pm.environment.get(\"maintenanceId\")));",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{asiApiUrl}}/maintenances/{{maintenanceId}}",
+              "host": [
+                "{{asiApiUrl}}"
+              ],
+              "path": [
+                "maintenances",
+                "{{maintenanceId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Consultation-inexistant",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 404\", () => {",
+                  "    pm.response.to.have.status(404);",
+                  "});",
+                  "pm.test(\"Corps d'erreur JSON\", () => {",
+                  "    pm.expect(pm.response.json().statut).to.eql(404);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{asiApiUrl}}/maintenances/9999",
+              "host": [
+                "{{asiApiUrl}}"
+              ],
+              "path": [
+                "maintenances",
+                "9999"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Modification-existant",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 200\", () => {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"Champ dateFin modifié\", () => {",
+                  "    pm.expect(String(pm.response.json().dateFin)).to.eql(String(\"2026-11-03\"));",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{asiApiUrl}}/maintenances/{{maintenanceId}}",
+              "host": [
+                "{{asiApiUrl}}"
+              ],
+              "path": [
+                "maintenances",
+                "{{maintenanceId}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"dateDebut\": \"2026-11-01\",\n  \"description\": \"Vidange\",\n  \"dateFin\": \"2026-11-03\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Modification-inexistant",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 404\", () => {",
+                  "    pm.response.to.have.status(404);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{asiApiUrl}}/maintenances/9999",
+              "host": [
+                "{{asiApiUrl}}"
+              ],
+              "path": [
+                "maintenances",
+                "9999"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"dateDebut\": \"2026-11-01\",\n  \"description\": \"Vidange\",\n  \"dateFin\": \"2026-11-03\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Suppression-existant",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 204\", () => {",
+                  "    pm.response.to.have.status(204);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{asiApiUrl}}/maintenances/{{maintenanceId}}",
+              "host": [
+                "{{asiApiUrl}}"
+              ],
+              "path": [
+                "maintenances",
+                "{{maintenanceId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Suppression-inexistant",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 404\", () => {",
+                  "    pm.response.to.have.status(404);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{asiApiUrl}}/maintenances/9999",
+              "host": [
+                "{{asiApiUrl}}"
+              ],
+              "path": [
+                "maintenances",
+                "9999"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Reservations",
+      "item": [
+        {
+          "name": "Liste",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 200\", () => {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"Réponse JSON sous forme de tableau\", () => {",
+                  "    pm.expect(pm.response.json()).to.be.an(\"array\");",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{asiApiUrl}}/reservations",
+              "host": [
+                "{{asiApiUrl}}"
+              ],
+              "path": [
+                "reservations"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Ajout-sans-id",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 201\", () => {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "pm.test(\"Identifiant généré\", () => {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json.idReservation).to.be.a(\"number\");",
+                  "    pm.environment.set(\"reservationId\", json.idReservation);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{asiApiUrl}}/reservations",
+              "host": [
+                "{{asiApiUrl}}"
+              ],
+              "path": [
+                "reservations"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"dateDebut\": \"2026-11-03\",\n  \"dateFin\": \"2026-11-05\",\n  \"statut\": \"CONFIRMEE\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Ajout-avec-id",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 400\", () => {",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{asiApiUrl}}/reservations",
+              "host": [
+                "{{asiApiUrl}}"
+              ],
+              "path": [
+                "reservations"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idReservation\": 1,\n  \"dateDebut\": \"2026-11-03\",\n  \"dateFin\": \"2026-11-05\",\n  \"statut\": \"CONFIRMEE\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Consultation-existant",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 200\", () => {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"Bon identifiant\", () => {",
+                  "    pm.expect(pm.response.json().idReservation).to.eql(Number(pm.environment.get(\"reservationId\")));",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{asiApiUrl}}/reservations/{{reservationId}}",
+              "host": [
+                "{{asiApiUrl}}"
+              ],
+              "path": [
+                "reservations",
+                "{{reservationId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Consultation-inexistant",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 404\", () => {",
+                  "    pm.response.to.have.status(404);",
+                  "});",
+                  "pm.test(\"Corps d'erreur JSON\", () => {",
+                  "    pm.expect(pm.response.json().statut).to.eql(404);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{asiApiUrl}}/reservations/9999",
+              "host": [
+                "{{asiApiUrl}}"
+              ],
+              "path": [
+                "reservations",
+                "9999"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Modification-existant",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 200\", () => {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"Champ statut modifié\", () => {",
+                  "    pm.expect(String(pm.response.json().statut)).to.eql(String(\"ANNULEE\"));",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{asiApiUrl}}/reservations/{{reservationId}}",
+              "host": [
+                "{{asiApiUrl}}"
+              ],
+              "path": [
+                "reservations",
+                "{{reservationId}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"dateDebut\": \"2026-11-03\",\n  \"dateFin\": \"2026-11-05\",\n  \"statut\": \"ANNULEE\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Modification-inexistant",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 404\", () => {",
+                  "    pm.response.to.have.status(404);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{asiApiUrl}}/reservations/9999",
+              "host": [
+                "{{asiApiUrl}}"
+              ],
+              "path": [
+                "reservations",
+                "9999"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"dateDebut\": \"2026-11-03\",\n  \"dateFin\": \"2026-11-05\",\n  \"statut\": \"ANNULEE\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Suppression-existant",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 204\", () => {",
+                  "    pm.response.to.have.status(204);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{asiApiUrl}}/reservations/{{reservationId}}",
+              "host": [
+                "{{asiApiUrl}}"
+              ],
+              "path": [
+                "reservations",
+                "{{reservationId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Suppression-inexistant",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 404\", () => {",
+                  "    pm.response.to.have.status(404);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{asiApiUrl}}/reservations/9999",
+              "host": [
+                "{{asiApiUrl}}"
+              ],
+              "path": [
+                "reservations",
+                "9999"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Vehicules",
+      "item": [
+        {
+          "name": "Liste",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 200\", () => {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"Réponse JSON sous forme de tableau\", () => {",
+                  "    pm.expect(pm.response.json()).to.be.an(\"array\");",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{asiApiUrl}}/vehicules",
+              "host": [
+                "{{asiApiUrl}}"
+              ],
+              "path": [
+                "vehicules"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Ajout-sans-id",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 201\", () => {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "pm.test(\"Identifiant généré\", () => {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json.idVehicule).to.be.a(\"number\");",
+                  "    pm.environment.set(\"vehiculeId\", json.idVehicule);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{asiApiUrl}}/vehicules",
+              "host": [
+                "{{asiApiUrl}}"
+              ],
+              "path": [
+                "vehicules"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"immatriculation\": \"123TU4567\",\n  \"marque\": \"Isuzu\",\n  \"modele\": \"DMax\",\n  \"categorie\": \"SUV\",\n  \"tarifJournalier\": 100.0,\n  \"statut\": \"DISPONIBLE\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Ajout-avec-id",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 400\", () => {",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{asiApiUrl}}/vehicules",
+              "host": [
+                "{{asiApiUrl}}"
+              ],
+              "path": [
+                "vehicules"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idVehicule\": 1,\n  \"immatriculation\": \"123TU4567\",\n  \"marque\": \"Isuzu\",\n  \"modele\": \"DMax\",\n  \"categorie\": \"SUV\",\n  \"tarifJournalier\": 100.0,\n  \"statut\": \"DISPONIBLE\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Consultation-existant",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 200\", () => {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"Bon identifiant\", () => {",
+                  "    pm.expect(pm.response.json().idVehicule).to.eql(Number(pm.environment.get(\"vehiculeId\")));",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{asiApiUrl}}/vehicules/{{vehiculeId}}",
+              "host": [
+                "{{asiApiUrl}}"
+              ],
+              "path": [
+                "vehicules",
+                "{{vehiculeId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Consultation-inexistant",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 404\", () => {",
+                  "    pm.response.to.have.status(404);",
+                  "});",
+                  "pm.test(\"Corps d'erreur JSON\", () => {",
+                  "    pm.expect(pm.response.json().statut).to.eql(404);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{asiApiUrl}}/vehicules/9999",
+              "host": [
+                "{{asiApiUrl}}"
+              ],
+              "path": [
+                "vehicules",
+                "9999"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Modification-existant",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 200\", () => {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"Champ statut modifié\", () => {",
+                  "    pm.expect(String(pm.response.json().statut)).to.eql(String(\"LOUE\"));",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{asiApiUrl}}/vehicules/{{vehiculeId}}",
+              "host": [
+                "{{asiApiUrl}}"
+              ],
+              "path": [
+                "vehicules",
+                "{{vehiculeId}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"immatriculation\": \"123TU4567\",\n  \"marque\": \"Isuzu\",\n  \"modele\": \"DMax\",\n  \"categorie\": \"SUV\",\n  \"tarifJournalier\": 100.0,\n  \"statut\": \"LOUE\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Modification-inexistant",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 404\", () => {",
+                  "    pm.response.to.have.status(404);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{asiApiUrl}}/vehicules/9999",
+              "host": [
+                "{{asiApiUrl}}"
+              ],
+              "path": [
+                "vehicules",
+                "9999"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"immatriculation\": \"123TU4567\",\n  \"marque\": \"Isuzu\",\n  \"modele\": \"DMax\",\n  \"categorie\": \"SUV\",\n  \"tarifJournalier\": 100.0,\n  \"statut\": \"LOUE\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Suppression-existant",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 204\", () => {",
+                  "    pm.response.to.have.status(204);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{asiApiUrl}}/vehicules/{{vehiculeId}}",
+              "host": [
+                "{{asiApiUrl}}"
+              ],
+              "path": [
+                "vehicules",
+                "{{vehiculeId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Suppression-inexistant",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 404\", () => {",
+                  "    pm.response.to.have.status(404);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{asiApiUrl}}/vehicules/9999",
+              "host": [
+                "{{asiApiUrl}}"
+              ],
+              "path": [
+                "vehicules",
+                "9999"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Paiements",
+      "item": [
+        {
+          "name": "Liste",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 200\", () => {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{asiApiUrl}}/paiements",
+              "host": [
+                "{{asiApiUrl}}"
+              ],
+              "path": [
+                "paiements"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Consultation-inexistant",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 404\", () => {",
+                  "    pm.response.to.have.status(404);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{asiApiUrl}}/paiements/9999",
+              "host": [
+                "{{asiApiUrl}}"
+              ],
+              "path": [
+                "paiements",
+                "9999"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Ajout-interdit",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Statut 405\", () => {",
+                  "    pm.response.to.have.status(405);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{asiApiUrl}}/paiements",
+              "host": [
+                "{{asiApiUrl}}"
+              ],
+              "path": [
+                "paiements"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"montant\": 100,\n  \"datePaiement\": \"2026-11-02\",\n  \"modePaiement\": \"CARTE\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
